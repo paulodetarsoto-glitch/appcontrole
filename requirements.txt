@@ -3,4 +3,3 @@ pandas
 numpy
 plotly
 reportlab
-sqlite3-binary
