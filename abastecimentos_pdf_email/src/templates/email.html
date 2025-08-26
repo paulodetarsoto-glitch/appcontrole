@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Abastecimento</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Relatório de Abastecimento</h1>
+    <p>Prezado(a),</p>
+    <p>Segue abaixo o relatório de abastecimento referente ao veículo:</p>
+    <table>
+        <tr>
+            <th>Placa</th>
+            <td>{{ placa }}</td>
+        </tr>
+        <tr>
+            <th>Justificativa</th>
+            <td>{{ justificativa }}</td>
+        </tr>
+        <tr>
+            <th>Supervisor</th>
+            <td>{{ supervisor }}</td>
+        </tr>
+        <tr>
+            <th>Setor</th>
+            <td>{{ setor }}</td>
+        </tr>
+        <tr>
+            <th>Quantidade de Litros</th>
+            <td>{{ quantidade_litros }}</td>
+        </tr>
+        <tr>
+            <th>Tipo de Combustível</th>
+            <td>{{ tipo_combustivel }}</td>
+        </tr>
+    </table>
+    <p>Atenciosamente,</p>
+    <p>Sua equipe de abastecimento</p>
+</body>
+</html>
