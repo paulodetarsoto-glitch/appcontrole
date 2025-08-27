@@ -28,6 +28,7 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__)) if '__file__' in locals
 DEFAULT_LOGO_PATH = os.path.join(PROJECT_DIR, "Logo_FrangoAmericano_slogan_COLOR.png")
 SETTINGS_PATH = os.path.join(PROJECT_DIR, "settings.json")
 DATA_FILE_PATH = os.path.join(PROJECT_DIR, "abastecimentos.csv")
+CSS_PATH = os.path.join(PROJECT_DIR, "styles.css")
 
 def create_default_settings():
     """Cria um arquivo de configurações padrão se ele não existir."""
@@ -46,8 +47,319 @@ def create_default_settings():
     except Exception:
         return False
 
+def create_default_css():
+    """Cria um arquivo CSS padrão com suporte a tema escuro/claro se ele não existir."""
+    CUSTOM_CSS = """
+    :root {
+        /* Variáveis para o tema claro (padrão) */
+        --primary-dark: #01263f;
+        --primary-medium: #003b63;
+        --highlight-blue: #1F77B4;
+        --app-background: #f0f2f6;
+        --card-background: #ffffff;
+        --text-color: #333333;
+        --text-muted: #666666;
+        --border-color: #e0e0e0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        /* Variáveis para o tema escuro */
+        --primary-dark: #007bff; /* Ou a cor que preferir */
+        --primary-medium: #0056b3;
+        --highlight-blue: #33aaff;
+        --app-background: #1a1a1a;
+        --card-background: #2d2d2d;
+        --text-color: #f0f2f6;
+        --text-muted: #aaaaaa;
+        --border-color: #444444;
+    }
+
+    /* Estilos Gerais */
+    body {
+        background: var(--app-background) !important;
+        color: var(--text-color);
+        font-family: 'Segoe UI', Roboto, sans-serif;
+        margin: 0;
+    }
+
+    /* Sidebar */
+    [data-testid="stSidebar"] > div:first-child {
+        background: linear-gradient(180deg, var(--primary-dark), var(--primary-medium));
+        color: white !important;
+        padding-top: 12px;
+        box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    }
+    [data-testid="stSidebar"] * {
+        color: white !important;
+    }
+    .sidebar-logo-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 0 12px 0;
+        margin-bottom: 20px;
+    }
+    [data-testid="stSidebarNav"] li > a {
+        font-size: 1.1em;
+        padding: 10px 20px;
+        border-radius: 8px;
+        margin: 5px 10px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+    [data-testid="stSidebarNav"] li > a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--highlight-blue) !important;
+    }
+    [data-testid="stSidebarNav"] li > a.current {
+        background-color: var(--highlight-blue);
+        font-weight: bold;
+    }
+
+    /* Cards */
+    .app-card {
+        background: var(--card-background);
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        border: 1px solid var(--border-color);
+    }
+    .title-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+        background: linear-gradient(90deg, var(--primary-dark), var(--primary-medium));
+        color: white;
+        padding: 15px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    .title-bar h2 {
+        color: white !important;
+        margin: 0;
+        font-size: 1.8em;
+        font-weight: 600;
+    }
+    .title-bar img {
+        filter: brightness(0) invert(1);
+    }
+    .top-actions > button {
+        margin-left: 10px;
+        border-radius: 20px;
+        padding: 8px 18px;
+        font-weight: 500;
+    }
+    .table-actions button {
+        margin-right: 8px;
+        border-radius: 20px;
+        padding: 6px 15px;
+    }
+
+    /* Botões */
+    .stButton>button {
+        background: var(--highlight-blue);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 10px 20px;
+        font-weight: bold;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+    .stButton>button:hover {
+        background: var(--primary-medium);
+        transform: translateY(-2px);
+    }
+    .stButton>button:active {
+        transform: translateY(0);
+    }
+
+    /* Títulos */
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--primary-dark);
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+    }
+    h3 {
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+        color: var(--primary-medium);
+    }
+
+    /* Mensagens de feedback */
+    [data-testid="stNotification"] {
+        border-radius: 8px;
+        padding: 12px 18px;
+        border: none;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    [data-testid="stNotification"] p {
+        font-size: 1.0em;
+    }
+
+    [data-testid="stInfo"] { background-color: rgba(23,162,184,0.1); border-left: 5px solid var(--info-color); color: var(--info-color); }
+    [data-testid="stSuccess"] { background-color: rgba(40,167,69,0.1); border-left: 5px solid var(--success-color); color: var(--success-color); }
+    [data-testid="stWarning"] { background-color: rgba(255,193,7,0.1); border-left: 5px solid var(--warning-color); color: var(--warning-color); }
+    [data-testid="stError"] { background-color: rgba(220,53,69,0.1); border-left: 5px solid var(--error-color); color: var(--error-color); }
+    
+    /* Inputs e Selectboxes */
+    div[data-testid="stForm"] {
+        background-color: var(--card-background);
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+    }
+
+    .stTextInput>div>div>input,
+    .stTextArea>div>div>textarea,
+    .stSelectbox>div>div>div>div>div:first-child {
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        padding: 10px 15px;
+        background-color: var(--app-background);
+        transition: border-color 0.2s, box-shadow 0.2s;
+        color: var(--text-color);
+    }
+    .stTextInput>div>div>input:focus,
+    .stTextArea>div>div>textarea:focus,
+    .stSelectbox>div>div>div>div>div:first-child:focus {
+        border-color: var(--highlight-blue);
+        box-shadow: 0 0 0 0.15rem rgba(31, 119, 180, 0.25);
+        outline: none;
+    }
+    
+    /* Estilo para desabilitar o autocomplete nos campos de texto */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover,
+    input:-webkit-autofill:focus,
+    textarea:-webkit-autofill,
+    textarea:-webkit-autofill:hover,
+    textarea:-webkit-autofill:focus,
+    select:-webkit-autofill,
+    select:-webkit-autofill:hover,
+    select:-webkit-autofill:focus {
+        -webkit-box-shadow: 0 0 0px 1000px var(--card-background) inset !important;
+        -webkit-text-fill-color: var(--text-color) !important;
+    }
+
+    /* Dashboard Metrics */
+    [data-testid="stMetric"] {
+        background-color: var(--card-background);
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid var(--border-color);
+        text-align: center;
+    }
+    [data-testid="stMetric"] label {
+        color: var(--text-muted);
+        font-weight: normal;
+        font-size: 1.0em;
+        margin-bottom: 5px;
+    }
+    [data-testid="stMetric"] div[data-testid="stMarkdownContainer"] h1 {
+        color: var(--highlight-blue);
+        font-size: 2.2em;
+        margin: 0;
+        font-weight: 700;
+    }
+
+    /* Login Page */
+    .login-background {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: var(--app-background);
+        display: flex; align-items: center; justify-content: center; flex-direction: column;
+        background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" opacity="0.1"><circle cx="50" cy="50" r="40" fill="%23007bff"/></svg>');
+        background-size: 150px 150px;
+    }
+    .login-watermark {
+        position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        opacity: 0.15;
+        z-index: 0; max-width: 80%; height: auto;
+        filter: grayscale(100%) brightness(200%);
+    }
+    .login-card {
+        background-color: var(--card-background);
+        padding: 30px; border-radius: 15px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); width: 100%; max-width: 420px;
+        text-align: center; z-index: 1;
+        border: 1px solid var(--border-color);
+    }
+    .login-logo-card { width: 100%; max-width: 300px; margin-bottom: 20px; }
+    .login-title {
+        font-size: 2.2em; font-weight: bold; color: var(--primary-dark);
+        text-transform: uppercase; margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+    .login-subtitle { font-size: 1.0em; color: var(--text-muted); margin-bottom: 25px; }
+    .login-input {
+        width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color);
+        border-radius: 8px; font-size: 1.0em;
+    }
+    .login-button button {
+        width: 100%; padding: 12px; font-size: 1.1em; font-weight: bold;
+        background: var(--highlight-blue); color: white; border: none; border-radius: 8px;
+        transition: background-color 0.2s, transform 0.2s;
+    }
+    .login-button button:hover {
+        background: var(--primary-medium);
+        transform: translateY(-2px);
+    }
+    .login-button button:active {
+        transform: translateY(0);
+    }
+
+    .forgot-password { margin-top: 20px; font-size: 0.9em; color: var(--text-muted); }
+    .forgot-password a { color: var(--highlight-blue); text-decoration: none; font-weight: 500; }
+    .forgot-password a:hover { text-decoration: underline; }
+
+    /* Estilo da tabela */
+    .ag-cell[col-id="Status"] .ag-cell-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        padding: 0;
+    }
+    .ag-cell[col-id="Status"] .st-ag-editor-container .stSelectbox {
+        width: 100%;
+    }
+    .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child>div>div>div {
+        border-radius: 4px;
+        padding: 4px 8px;
+        font-weight: bold;
+        text-align: center;
+        color: white !important;
+    }
+    .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child[data-testid="stSelectbox-variant-Enviada"] {
+        background-color: var(--info-color);
+    }
+    .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child[data-testid="stSelectbox-variant-Abastecida"] {
+        background-color: var(--success-color);
+    }
+    .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child[data-testid="stSelectbox-variant-Cancelada"] {
+        background-color: var(--error-color);
+    }
+    .st-emotion-cache-12t9w-1 {
+        font-size: 0.8em;
+    }
+    .st-emotion-cache-1wv0j3r {
+        padding: 4px 8px;
+    }
+    """
+    try:
+        with open(CSS_PATH, "w", encoding="utf-8") as f:
+            f.write(CUSTOM_CSS)
+        return True
+    except Exception:
+        return False
+
 if not os.path.exists(SETTINGS_PATH):
     create_default_settings()
+if not os.path.exists(CSS_PATH):
+    create_default_css()
 
 def load_settings():
     if os.path.exists(SETTINGS_PATH):
@@ -64,7 +376,8 @@ def save_settings(s):
         with open(target, "w", encoding="utf-8") as f:
             json.dump(s, f, indent=2, ensure_ascii=False)
         return True
-    except Exception:
+    except Exception as e:
+        st.error(f"Erro ao salvar os dados: {e}")
         return False
 
 _settings = load_settings()
@@ -99,314 +412,8 @@ def load_and_inject_css(css_file_path):
         with open(css_file_path, "r", encoding="utf-8") as f:
             st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
     else:
-        CUSTOM_CSS = """
-        <style>
-        /* Variáveis de Cores */
-        :root {
-            --primary-dark: #01263f;
-            --primary-medium: #003b63;
-            --highlight-blue: #1F77B4;
-            --app-background: #f0f2f6; /* Cinza claro suave */
-            --card-background: #ffffff;
-            --text-dark: #333333;
-            --text-medium: #666666;
-            --success-color: #28a745;
-            --error-color: #dc3545;
-            --warning-color: #ffc107;
-            --info-color: #17a2b8;
-            --border-color: #e0e0e0;
-        }
+        st.error(f"Arquivo CSS não encontrado: {css_file_path}")
 
-        body {
-            background: var(--app-background) !important;
-            color: var(--text-dark);
-            font-family: 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
-        }
-
-        /* Sidebar */
-        [data-testid="stSidebar"] > div:first-child {
-            background: linear-gradient(180deg, var(--primary-dark), var(--primary-medium));
-            color: #fff !important;
-            padding-top: 12px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
-        [data-testid="stSidebar"] * {
-            color: #fff !important;
-        }
-        .sidebar-logo-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 0 12px 0;
-            margin-bottom: 20px;
-        }
-        [data-testid="stSidebarNav"] li > a {
-            font-size: 1.1em;
-            padding: 10px 20px;
-            border-radius: 8px;
-            margin: 5px 10px;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        [data-testid="stSidebarNav"] li > a:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: var(--highlight-blue) !important;
-        }
-        [data-testid="stSidebarNav"] li > a.current {
-            background-color: var(--highlight-blue);
-            font-weight: bold;
-        }
-
-
-        /* Cards */
-        .app-card {
-            background: var(--card-background);
-            border-radius: 8px;
-            padding: 15px 20px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid var(--border-color);
-        }
-        .title-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            background: linear-gradient(90deg, var(--primary-dark), var(--primary-medium)); /* Fundo do card de título */
-            color: white;
-            padding: 15px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .title-bar h2 {
-            color: white !important;
-            margin: 0;
-            font-size: 1.8em;
-            font-weight: 600;
-        }
-        .title-bar img {
-            filter: brightness(0) invert(1); /* Inverte cores da logo se ela for escura para aparecer no fundo escuro */
-        }
-        .top-actions > button {
-            margin-left: 10px;
-            border-radius: 20px; /* Botões mais arredondados */
-            padding: 8px 18px;
-            font-weight: 500;
-        }
-        .table-actions button {
-            margin-right: 8px;
-            border-radius: 20px;
-            padding: 6px 15px;
-        }
-
-        /* Botões */
-        .stButton>button {
-            background: var(--highlight-blue);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: bold;
-            transition: background-color 0.2s, transform 0.2s;
-        }
-        .stButton>button:hover {
-            background: #176097; /* Um pouco mais escuro no hover */
-            transform: translateY(-2px);
-        }
-        .stButton>button:active {
-            transform: translateY(0);
-        }
-
-        /* Títulos */
-        h1, h2, h3, h4, h5, h6 {
-            color: var(--primary-dark);
-            margin-top: 1em;
-            margin-bottom: 0.5em;
-        }
-        h3 {
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 5px;
-            margin-bottom: 15px;
-            color: var(--primary-medium);
-        }
-
-        /* Mensagens de feedback */
-        [data-testid="stNotification"] {
-            border-radius: 8px;
-            padding: 12px 18px;
-            border: none;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        [data-testid="stNotification"] p {
-            font-size: 1.0em;
-        }
-
-        [data-testid="stInfo"] { background-color: rgba(23,162,184,0.1); border-left: 5px solid var(--info-color); color: var(--info-color); }
-        [data-testid="stSuccess"] { background-color: rgba(40,167,69,0.1); border-left: 5px solid var(--success-color); color: var(--success-color); }
-        [data-testid="stWarning"] { background-color: rgba(255,193,7,0.1); border-left: 5px solid var(--warning-color); color: var(--warning-color); }
-        [data-testid="stError"] { background-color: rgba(220,53,69,0.1); border-left: 5px solid var(--error-color); color: var(--error-color); }
-        
-        /* Inputs e Selectboxes */
-        div[data-testid="stForm"] {
-            background-color: var(--card-background);
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-        }
-
-        .stTextInput>div>div>input,
-        .stTextArea>div>div>textarea,
-        .stSelectbox>div>div>div>div>div:first-child {
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            padding: 10px 15px;
-            background-color: #fcfcfc;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-        .stTextInput>div>div>input:focus,
-        .stTextArea>div>div>textarea:focus,
-        .stSelectbox>div>div>div>div>div:first-child:focus {
-            border-color: var(--highlight-blue);
-            box-shadow: 0 0 0 0.15rem rgba(31, 119, 180, 0.25);
-            outline: none;
-        }
-        
-        /* Estilo para desabilitar o autocomplete nos campos de texto */
-        /* Isso não é um parâmetro do widget, mas um hack CSS para navegadores */
-        input:-webkit-autofill,
-        input:-webkit-autofill:hover,
-        input:-webkit-autofill:focus,
-        textarea:-webkit-autofill,
-        textarea:-webkit-autofill:hover,
-        textarea:-webkit-autofill:focus,
-        select:-webkit-autofill,
-        select:-webkit-autofill:hover,
-        select:-webkit-autofill:focus {
-            -webkit-box-shadow: 0 0 0px 1000px var(--card-background) inset !important;
-            -webkit-text-fill-color: var(--text-dark) !important;
-        }
-
-        /* Dashboard Metrics */
-        [data-testid="stMetric"] {
-            background-color: var(--card-background);
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid var(--border-color);
-            text-align: center;
-        }
-        [data-testid="stMetric"] label {
-            color: var(--text-medium);
-            font-weight: normal;
-            font-size: 1.0em;
-            margin-bottom: 5px;
-        }
-        [data-testid="stMetric"] div[data-testid="stMarkdownContainer"] h1 {
-            color: var(--highlight-blue);
-            font-size: 2.2em;
-            margin: 0;
-            font-weight: 700;
-        }
-
-        /* Login Page */
-        .login-background {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: #B2D8FF; /* Azul claro para o fundo do login */
-            display: flex; align-items: center; justify-content: center; flex-direction: column;
-            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" opacity="0.1"><circle cx="50" cy="50" r="40" fill="%23007bff"/></svg>'); /* Padrão suave */
-            background-size: 150px 150px;
-        }
-        .login-watermark {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            opacity: 0.15;
-            z-index: 0; max-width: 80%; height: auto;
-            filter: grayscale(100%) brightness(200%); /* Ajusta a marca d'água para ser mais sutil */
-        }
-        .login-card {
-            background-color: white; padding: 30px; border-radius: 15px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); width: 100%; max-width: 420px; /* Card de login um pouco maior */
-            text-align: center; z-index: 1;
-            border: 1px solid var(--border-color);
-        }
-        .login-logo-card { width: 100%; max-width: 300px; margin-bottom: 20px; }
-        .login-title {
-            font-size: 2.2em; font-weight: bold; color: var(--primary-dark);
-            text-transform: uppercase; margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-        .login-subtitle { font-size: 1.0em; color: var(--text-medium); margin-bottom: 25px; }
-        .login-input {
-            width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color);
-            border-radius: 8px; font-size: 1.0em;
-        }
-        .login-button button {
-            width: 100%; padding: 12px; font-size: 1.1em; font-weight: bold;
-            background: var(--highlight-blue); color: white; border: none; border-radius: 8px;
-            transition: background-color 0.2s, transform 0.2s;
-        }
-        .login-button button:hover {
-            background: #176097;
-            transform: translateY(-2px);
-        }
-        .login-button button:active {
-            transform: translateY(0);
-        }
-
-        .forgot-password { margin-top: 20px; font-size: 0.9em; color: var(--text-medium); }
-        .forgot-password a { color: var(--highlight-blue); text-decoration: none; font-weight: 500; }
-        .forgot-password a:hover { text-decoration: underline; }
-
-        /* Estilo para a formatação condicional da coluna Status */
-        /* O Streamlit, por baixo dos panos, renderiza um select box com a opção selecionada */
-        /* dentro de uma div. A classe dessa div é o que vamos usar para aplicar o estilo. */
-        
-        /* Estilo base para todas as células de status */
-        .ag-cell[col-id="Status"] .ag-cell-wrapper {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            padding: 0;
-        }
-
-        /* Targeta o Selectbox dentro da célula do Ag-Grid */
-        .ag-cell[col-id="Status"] .st-ag-editor-container .stSelectbox {
-            width: 100%;
-        }
-
-        /* Estilos para as opções selecionadas */
-        .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child>div>div>div {
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-weight: bold;
-            text-align: center;
-            color: white !important;
-        }
-
-        /* Cores de fundo para cada status */
-        .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child[data-testid="stSelectbox-variant-Enviada"] {
-            background-color: var(--info-color); /* Azul para "Enviada" */
-        }
-        .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child[data-testid="stSelectbox-variant-Abastecida"] {
-            background-color: var(--success-color); /* Verde para "Abastecida" */
-        }
-        .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child[data-testid="stSelectbox-variant-Cancelada"] {
-            background-color: var(--error-color); /* Vermelho para "Cancelada" */
-        }
-        
-        /* Estilos da tabela principal de Requisições */
-        .st-emotion-cache-12t9w-1 {
-            font-size: 0.8em; /* Fonte menor para a tabela */
-        }
-        .st-emotion-cache-12t9w-1 .css-1wv0j3r {
-            padding: 4px 8px; /* Reduz o padding das células */
-        }
-        </style>
-        """
-        st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
-
-CSS_PATH = os.path.join(PROJECT_DIR, "styles.css")
 load_and_inject_css(CSS_PATH)
 
 # ===========================
@@ -517,7 +524,7 @@ def generate_request_pdf(payload: dict) -> bytes:
         ["Supervisor:", payload.get("supervisor", "")],
         ["Setor:", payload.get("setor", "")],
         ["Subsetor:", payload.get("subsetor", "")],
-        ["Cidade:", payload.get("cidade", "")], # Adicionado
+        ["Cidade:", payload.get("cidade", "")],
     ]
 
     if payload.get("km_atual") not in (None, "", 0):
@@ -562,14 +569,12 @@ def load_data(filename=DATA_FILE_PATH):
     if os.path.exists(filename):
         try:
             df = pd.read_csv(filename)
-            # Garante que as colunas de data e numéricas estejam no formato correto
             df['data'] = pd.to_datetime(df['data'], errors='coerce')
             df['DataUso'] = pd.to_datetime(df['DataUso'], errors='coerce')
             df['total_litros'] = pd.to_numeric(df['total_litros'], errors='coerce')
             df['valor_total'] = pd.to_numeric(df['valor_total'], errors='coerce')
             df['Odometro'] = pd.to_numeric(df['Odometro'], errors='coerce')
             df['KmUso'] = pd.to_numeric(df['KmUso'], errors='coerce')
-            # Preenche valores NaN em colunas numéricas para evitar erros
             df['total_litros'] = df['total_litros'].fillna(0)
             df['valor_total'] = df['valor_total'].fillna(0)
             df['Odometro'] = df['Odometro'].fillna(0)
@@ -624,16 +629,16 @@ def pagina_requisicoes():
         
         POSTOS_LIST = ["R A Mendes", "Toca Da Onça", "Petronorte", "Linhares", "Posto Minas Gerais", "Boa Vista", "Medeiros", "Posto Americano", "Posto Milena", "NR Comercio Comb.", "Auto Posto Netinho", "Posto Oriente", "Posto R.S.F.", "Rede K"]
         
-        with st.form("form_nova_req"):
+        with st.form("form_nova_req", clear_on_submit=False):
             colA, colB, colC = st.columns(3)
             with colA:
-                placa = st.text_input("Placa", max_chars=8, help="O hífen será adicionado automaticamente.")
-                condutor = st.text_input("Condutor")
+                placa = st.text_input("Placa", max_chars=8, help="O hífen será adicionado automaticamente.", autocomplete="off")
+                condutor = st.text_input("Condutor", autocomplete="off")
                 supervisor = st.session_state.get('current_user')
                 st.info(f"{supervisor}")
                 setor = st.selectbox("Setor", ["Abatedouro", "Fábrica Tocantinópolis", "Granjas de produção", "Incubatório", "Granjas Matrizes", "CD Paraíso", "Fábrica de Araguaína"])
                 subsetor = st.selectbox("Subsetor", ["Congelados", "Transporte de funcionários", "Campo", "Pega de frango", "Integração"])
-                email_posto = st.text_input("E-mail do Posto")
+                email_posto = st.text_input("E-mail do Posto", autocomplete="off")
             with colB:
                 tipo_posto = st.selectbox("Referente do veículo", ["Próprio", "Terceiro"])
                 litros = st.number_input("Quantidade (L)", min_value=0.0, step=0.1, value=0.0)
@@ -642,7 +647,7 @@ def pagina_requisicoes():
                 posto = st.selectbox("Posto", POSTOS_LIST)
             with colC:
                 data_req = st.date_input("Data da requisição", value=datetime.today(), disabled=True)
-                cidade = st.text_input("Cidade") # Adicionado
+                cidade = st.text_input("Cidade", autocomplete="off")
                 referente = st.text_area("Observações / Justificativa", height=80)
 
             col_submit, col_cancel = st.columns([1, 1])
@@ -711,7 +716,7 @@ def pagina_requisicoes():
                                 "Observacoes": referente.strip(), "TanqueCheio": 1 if tanque_cheio else 0,
                                 "DataUso": None, "KmUso": None, "EmailPosto": email_posto.strip(),
                                 "TipoPosto": tipo_posto, "Supervisor": supervisor.strip(),
-                                "Cidade": cidade.strip() # Adicionado
+                                "Cidade": cidade.strip()
                             }
                             
                             st.session_state.df_abastecimentos = pd.concat([st.session_state.df_abastecimentos, pd.DataFrame([new_req])], ignore_index=True)
@@ -759,17 +764,13 @@ def pagina_requisicoes():
             "Cancelada": "Cancelada"
         }
         
-        # Ajustado para usar st.dataframe em vez de st.columns
         df_display = df.copy()
         df_display = df_display.drop(columns=['Referente', 'Unidade', 'TanqueCheio', 'KmUso', 'EmailPosto', 'TipoPosto', 'Supervisor'], errors='ignore')
 
-        # Converte DataUso para string para evitar problemas de visualização
         df_display['DataUso'] = df_display['DataUso'].dt.strftime("%d/%m/%Y")
         
-        # Adiciona a coluna de ações para o botão de cancelar
         df_display['Ações'] = ""
 
-        # Dicionário de configuração para st.dataframe
         column_config_dict = {
             "id": st.column_config.NumberColumn("ID", disabled=True, width="small"),
             "data": st.column_config.DateColumn("Data Req.", format="DD/MM/YYYY", disabled=True, width="small"),
@@ -798,7 +799,6 @@ def pagina_requisicoes():
         )
 
         if is_admin:
-            # Lógica para salvar alterações de admin
             if not edited_df.equals(df_display):
                 st.session_state.df_abastecimentos = edited_df
                 save_data(st.session_state.df_abastecimentos)
@@ -811,7 +811,7 @@ def pagina_requisicoes():
 
             with st.form("admin_actions_form"):
                 st.markdown("Selecione os IDs das requisições para exclusão:")
-                ids_to_delete = st.text_input("IDs (separados por vírgula)")
+                ids_to_delete = st.text_input("IDs (separados por vírgula)", autocomplete="off")
                 
                 col_actions = st.columns(2)
                 with col_actions[0]:
@@ -846,8 +846,6 @@ def pagina_dashboard():
         return
         
     st.header("📊 Dashboard de Abastecimentos")
-    # A logo no dashboard agora vai herdar o estilo de cor principal do texto, se for um SVG ou se for tratado para isso.
-    # Para PNG/JPG, manteremos a imagem original.
     if LOGO_PATH and os.path.exists(LOGO_PATH):
         st.image(LOGO_PATH, width=120)
 
@@ -885,7 +883,7 @@ def pagina_dashboard():
     consumo_por_placa = df.groupby('Placa')['total_litros'].sum().nlargest(10).reset_index()
     fig2 = px.pie(consumo_por_placa, values='total_litros', names='Placa', 
                   title='Consumo por Placa', hole=.3,
-                  color_discrete_sequence=px.colors.sequential.Bluyl) # Uma sequência de azuis
+                  color_discrete_sequence=px.colors.sequential.Bluyl)
     st.plotly_chart(fig2, use_container_width=True)
 
     st.subheader("Consumo por Tipo de Combustível")
@@ -899,18 +897,15 @@ def generate_narrative(df):
     """Gera uma narrativa analítica simulando uma IA."""
     narrativas = []
     
-    # Narrativa sobre o consumo total
     total_litros = df['total_litros'].sum() if 'total_litros' in df.columns else 0
     total_valor = df['valor_total'].sum() if 'valor_total' in df.columns else 0
     narrativas.append(f"Análise geral: O volume total de combustível consumido foi de **{total_litros:,.2f} litros**, com um custo total de **R$ {total_valor:,.2f}**.")
     
-    # Narrativa sobre o top consumidor
     if not df.empty and 'Placa' in df.columns:
         top_placa = df.groupby('Placa')['total_litros'].sum().idxmax()
         top_consumo = df.groupby('Placa')['total_litros'].sum().max()
         narrativas.append(f"Principais veículos: O veículo de placa **{top_placa}** foi o maior consumidor, com um total de **{top_consumo:,.2f} litros**.")
         
-    # Narrativa sobre o pico de consumo
     if not df.empty and 'data' in df.columns:
         df_monthly = df.set_index('data').resample('M')['total_litros'].sum()
         if not df_monthly.empty:
@@ -918,7 +913,6 @@ def generate_narrative(df):
             pico_consumo = df_monthly.max()
             narrativas.append(f"Tendências de consumo: O pico de consumo ocorreu em **{pico_mes.strftime('%B de %Y')}**, com um total de **{pico_consumo:,.2f} litros**.")
     
-    # Narrativa sobre média de litros por requisição
     if not df.empty and 'total_litros' in df.columns:
         media_litros = df['total_litros'].mean()
         narrativas.append(f"Eficiência: A média de litros por requisição é de aproximadamente **{media_litros:,.2f} litros**.")
@@ -941,7 +935,6 @@ def pagina_narrativas():
     df = st.session_state.df_abastecimentos.copy()
     df['data'] = pd.to_datetime(df['data'], errors='coerce')
     
-    # Filtra apenas os registros com data válida para análise
     df_filtered = df.dropna(subset=['data'])
     
     narratives = generate_narrative(df_filtered)
@@ -959,9 +952,9 @@ def pagina_configuracoes():
     st.markdown("Preencha as configurações abaixo para SMTP, remetente e logo.")
     settings = load_settings()
     with st.form("form_settings"):
-        smtp_server = st.text_input("SMTP Server", value=settings.get("smtp_server", "smtp.gmail.com"))
+        smtp_server = st.text_input("SMTP Server", value=settings.get("smtp_server", "smtp.gmail.com"), autocomplete="off")
         smtp_port = st.number_input("SMTP Port", min_value=1, max_value=65535, value=int(settings.get("smtp_port", 587)))
-        smtp_user = st.text_input("SMTP User (e-mail remetente)", value=settings.get("smtp_user", ""))
+        smtp_user = st.text_input("SMTP User (e-mail remetente)", value=settings.get("smtp_user", ""), autocomplete="off")
         
         st.markdown(
             "⚠️ **Atenção**: Para contas do Google (Gmail), a senha deve ser uma **senha de aplicativo**."
@@ -1005,16 +998,13 @@ def _get_base64_image(image_path):
 def login_page():
     st.markdown('<div class="login-background">', unsafe_allow_html=True)
     if os.path.exists(LOGO_PATH):
-        # A imagem no login-watermark pode ser estilizada para ser mais sutil.
-        # Para PNG/JPG, usamos um filtro.
         st.markdown(f'<img src="data:image/png;base64,{_get_base64_image(LOGO_PATH)}" class="login-watermark">', unsafe_allow_html=True)
     
-    # A logo principal do login
     st.image(LOGO_PATH, width=315)
     st.markdown('<h2 class="login-title">FAÇA LOGIN</h2>', unsafe_allow_html=True)
 
-    with st.form("login_form", clear_on_submit=False): # Adicionado clear_on_submit=False para manter o username se houver erro
-        username = st.text_input("Usuário", placeholder="Digite seu nome", label_visibility="collapsed")
+    with st.form("login_form", clear_on_submit=False):
+        username = st.text_input("Usuário", placeholder="Digite seu nome", label_visibility="collapsed", autocomplete="off")
         password = st.text_input("Senha", type="password", placeholder="Digite sua senha", label_visibility="collapsed", autocomplete="new-password")
         submit_button = st.form_submit_button("Entrar", type="primary")
 
