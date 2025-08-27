@@ -786,10 +786,6 @@ def pagina_requisicoes():
         })
         
         columns_to_show = ["id", "data", "Placa", "Condutor", "Supervisor", "Setor", "Subsetor", "Cidade", "Quantidade", "Status", "Odometro", "Posto", "Observacoes", "DataUso", "valor_total", "Ações"]
-
-        st.markdown("### Gerenciar Requisições")
-        st.info("Clique em **Cancelar** para remover uma requisição da lista.")
-
         rows = df_display.to_dict('records')
         
         col_list = st.columns([0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
