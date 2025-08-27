@@ -64,8 +64,7 @@ def save_settings(s):
         with open(target, "w", encoding="utf-8") as f:
             json.dump(s, f, indent=2, ensure_ascii=False)
         return True
-    except Exception as e:
-        st.error(f"Erro ao salvar os dados: {e}")
+    except Exception:
         return False
 
 _settings = load_settings()
@@ -625,7 +624,7 @@ def pagina_requisicoes():
         
         POSTOS_LIST = ["R A Mendes", "Toca Da Onça", "Petronorte", "Linhares", "Posto Minas Gerais", "Boa Vista", "Medeiros", "Posto Americano", "Posto Milena", "NR Comercio Comb.", "Auto Posto Netinho", "Posto Oriente", "Posto R.S.F.", "Rede K"]
         
-        with st.form("form_nova_req", clear_on_submit=False):
+        with st.form("form_nova_req", clear_on_submit=False, autocomplete="off"):
             colA, colB, colC = st.columns(3)
             with colA:
                 placa = st.text_input("Placa", max_chars=8, help="O hífen será adicionado automaticamente.", autocomplete="off")
@@ -644,7 +643,7 @@ def pagina_requisicoes():
             with colC:
                 data_req = st.date_input("Data da requisição", value=datetime.today(), disabled=True)
                 cidade = st.text_input("Cidade", autocomplete="off") # Adicionado
-                referente = st.text_area("Observações / Justificativa", height=80)
+                referente = st.text_area("Observações / Justificativa", height=80, autocomplete="off")
 
             col_submit, col_cancel = st.columns([1, 1])
             with col_submit:
@@ -959,7 +958,7 @@ def pagina_configuracoes():
     st.header("⚙️ Configurações")
     st.markdown("Preencha as configurações abaixo para SMTP, remetente e logo.")
     settings = load_settings()
-    with st.form("form_settings"):
+    with st.form("form_settings", autocomplete="off"):
         smtp_server = st.text_input("SMTP Server", value=settings.get("smtp_server", "smtp.gmail.com"), autocomplete="off")
         smtp_port = st.number_input("SMTP Port", min_value=1, max_value=65535, value=int(settings.get("smtp_port", 587)))
         smtp_user = st.text_input("SMTP User (e-mail remetente)", value=settings.get("smtp_user", ""), autocomplete="off")
@@ -1014,7 +1013,7 @@ def login_page():
     st.image(LOGO_PATH, width=315)
     st.markdown('<h2 class="login-title">FAÇA LOGIN</h2>', unsafe_allow_html=True)
 
-    with st.form("login_form", clear_on_submit=False):
+    with st.form("login_form", clear_on_submit=False, autocomplete="off"):
         username = st.text_input("Usuário", placeholder="Digite seu nome", label_visibility="collapsed", autocomplete="off")
         password = st.text_input("Senha", type="password", placeholder="Digite sua senha", label_visibility="collapsed", autocomplete="new-password")
         submit_button = st.form_submit_button("Entrar", type="primary")
