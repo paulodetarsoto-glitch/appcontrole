@@ -64,7 +64,8 @@ def save_settings(s):
         with open(target, "w", encoding="utf-8") as f:
             json.dump(s, f, indent=2, ensure_ascii=False)
         return True
-    except Exception:
+    except Exception as e:
+        st.error(f"Erro ao salvar os dados: {e}")
         return False
 
 _settings = load_settings()
@@ -399,7 +400,7 @@ def load_and_inject_css(css_file_path):
         .st-emotion-cache-12t9w-1 {
             font-size: 0.8em; /* Fonte menor para a tabela */
         }
-        .st-emotion-cache-12t9w-1 .css-1wv0j3r {
+        .st-emotion-cache-1wv0j3r {
             padding: 4px 8px; /* Reduz o padding das células */
         }
         </style>
@@ -624,16 +625,16 @@ def pagina_requisicoes():
         
         POSTOS_LIST = ["R A Mendes", "Toca Da Onça", "Petronorte", "Linhares", "Posto Minas Gerais", "Boa Vista", "Medeiros", "Posto Americano", "Posto Milena", "NR Comercio Comb.", "Auto Posto Netinho", "Posto Oriente", "Posto R.S.F.", "Rede K"]
         
-        with st.form("form_nova_req"):
+        with st.form("form_nova_req", clear_on_submit=False):
             colA, colB, colC = st.columns(3)
             with colA:
-                placa = st.text_input("Placa", max_chars=8, help="O hífen será adicionado automaticamente.")
-                condutor = st.text_input("Condutor")
+                placa = st.text_input("Placa", max_chars=8, help="O hífen será adicionado automaticamente.", autocomplete="off")
+                condutor = st.text_input("Condutor", autocomplete="off")
                 supervisor = st.session_state.get('current_user')
                 st.info(f"{supervisor}")
                 setor = st.selectbox("Setor", ["Abatedouro", "Fábrica Tocantinópolis", "Granjas de produção", "Incubatório", "Granjas Matrizes", "CD Paraíso", "Fábrica de Araguaína"])
                 subsetor = st.selectbox("Subsetor", ["Congelados", "Transporte de funcionários", "Campo", "Pega de frango", "Integração"])
-                email_posto = st.text_input("E-mail do Posto")
+                email_posto = st.text_input("E-mail do Posto", autocomplete="off")
             with colB:
                 tipo_posto = st.selectbox("Referente do veículo", ["Próprio", "Terceiro"])
                 litros = st.number_input("Quantidade (L)", min_value=0.0, step=0.1, value=0.0)
@@ -642,7 +643,7 @@ def pagina_requisicoes():
                 posto = st.selectbox("Posto", POSTOS_LIST)
             with colC:
                 data_req = st.date_input("Data da requisição", value=datetime.today(), disabled=True)
-                cidade = st.text_input("Cidade") # Adicionado
+                cidade = st.text_input("Cidade", autocomplete="off") # Adicionado
                 referente = st.text_area("Observações / Justificativa", height=80)
 
             col_submit, col_cancel = st.columns([1, 1])
@@ -811,7 +812,7 @@ def pagina_requisicoes():
 
             with st.form("admin_actions_form"):
                 st.markdown("Selecione os IDs das requisições para exclusão:")
-                ids_to_delete = st.text_input("IDs (separados por vírgula)")
+                ids_to_delete = st.text_input("IDs (separados por vírgula)", autocomplete="off")
                 
                 col_actions = st.columns(2)
                 with col_actions[0]:
@@ -959,9 +960,9 @@ def pagina_configuracoes():
     st.markdown("Preencha as configurações abaixo para SMTP, remetente e logo.")
     settings = load_settings()
     with st.form("form_settings"):
-        smtp_server = st.text_input("SMTP Server", value=settings.get("smtp_server", "smtp.gmail.com"))
+        smtp_server = st.text_input("SMTP Server", value=settings.get("smtp_server", "smtp.gmail.com"), autocomplete="off")
         smtp_port = st.number_input("SMTP Port", min_value=1, max_value=65535, value=int(settings.get("smtp_port", 587)))
-        smtp_user = st.text_input("SMTP User (e-mail remetente)", value=settings.get("smtp_user", ""))
+        smtp_user = st.text_input("SMTP User (e-mail remetente)", value=settings.get("smtp_user", ""), autocomplete="off")
         
         st.markdown(
             "⚠️ **Atenção**: Para contas do Google (Gmail), a senha deve ser uma **senha de aplicativo**."
@@ -1013,8 +1014,8 @@ def login_page():
     st.image(LOGO_PATH, width=315)
     st.markdown('<h2 class="login-title">FAÇA LOGIN</h2>', unsafe_allow_html=True)
 
-    with st.form("login_form", clear_on_submit=False): # Adicionado clear_on_submit=False para manter o username se houver erro
-        username = st.text_input("Usuário", placeholder="Digite seu nome", label_visibility="collapsed")
+    with st.form("login_form", clear_on_submit=False):
+        username = st.text_input("Usuário", placeholder="Digite seu nome", label_visibility="collapsed", autocomplete="off")
         password = st.text_input("Senha", type="password", placeholder="Digite sua senha", label_visibility="collapsed", autocomplete="new-password")
         submit_button = st.form_submit_button("Entrar", type="primary")
 
