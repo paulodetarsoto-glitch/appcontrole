@@ -601,14 +601,12 @@ def pagina_requisicoes():
 
     col_main_title, col_button = st.columns([4, 1])
     with col_main_title:
-        st.markdown("<div class='app-card title-bar'>", unsafe_allow_html=True)
         col1, col2 = st.columns([1, 3])
         with col1:
             if LOGO_PATH and os.path.exists(LOGO_PATH):
                 st.image(LOGO_PATH, width=140)
         with col2:
             st.markdown("<h2 style='margin:0'>Requisição de abastecimento</h2>", unsafe_allow_html=True)
-        st.markdown("</div>", unsafe_allow_html=True)
     with col_button:
         if not st.session_state.get("show_new_req_form", False):
             st.markdown("<div style='padding-top: 15px;'>", unsafe_allow_html=True)
