@@ -394,6 +394,14 @@ def load_and_inject_css(css_file_path):
         .ag-cell[col-id="Status"] .stSelectbox>div>div>div>div>div:first-child[data-testid="stSelectbox-variant-Cancelada"] {
             background-color: var(--error-color); /* Vermelho para "Cancelada" */
         }
+        
+        /* Estilos da tabela principal de Requisições */
+        .st-emotion-cache-12t9w-1 {
+            font-size: 0.8em; /* Fonte menor para a tabela */
+        }
+        .st-emotion-cache-12t9w-1 .css-1wv0j3r {
+            padding: 4px 8px; /* Reduz o padding das células */
+        }
         </style>
         """
         st.markdown(CUSTOM_CSS, unsafe_allow_html=True)
@@ -496,7 +504,7 @@ def generate_request_pdf(payload: dict) -> bytes:
     story.append(Spacer(1, 12))
 
     placa = payload.get("placa", "").upper()
-    title = Paragraph(f"Requisição de Abastecimento                   {placa}", styles['Heading2'])
+    title = Paragraph(f"Requisição de Abastecimento          {placa}", styles['Heading2'])
     story.append(title)
     story.append(Spacer(1, 12))
 
@@ -751,114 +759,56 @@ def pagina_requisicoes():
             "Cancelada": "Cancelada"
         }
         
+        # Ajustado para usar st.dataframe em vez de st.columns
+        df_display = df.copy()
+        df_display = df_display.drop(columns=['Referente', 'Unidade', 'TanqueCheio', 'KmUso', 'EmailPosto', 'TipoPosto', 'Supervisor'], errors='ignore')
+
+        # Converte DataUso para string para evitar problemas de visualização
+        df_display['DataUso'] = df_display['DataUso'].dt.strftime("%d/%m/%Y")
+        
+        # Adiciona a coluna de ações para o botão de cancelar
+        df_display['Ações'] = ""
+
+        # Dicionário de configuração para st.dataframe
         column_config_dict = {
-            "id": st.column_config.NumberColumn("ID", disabled=True),
-            "data": st.column_config.DateColumn("Data", format="DD/MM/YYYY", disabled=True),
-            "Placa": st.column_config.TextColumn("Placa", disabled=True),
+            "id": st.column_config.NumberColumn("ID", disabled=True, width="small"),
+            "data": st.column_config.DateColumn("Data Req.", format="DD/MM/YYYY", disabled=True, width="small"),
+            "Placa": st.column_config.TextColumn("Placa", disabled=True, width="small"),
             "Condutor": st.column_config.TextColumn("Condutor", disabled=True),
             "Supervisor": st.column_config.TextColumn("Supervisor", disabled=True),
             "Setor": st.column_config.TextColumn("Setor", disabled=True),
             "Subsetor": st.column_config.TextColumn("Subsetor", disabled=True),
-            "Cidade": st.column_config.TextColumn("Cidade", disabled=True), # Adicionado
-            "Quantidade": st.column_config.TextColumn("Quantidade", disabled=True),
-            # O nome da coluna do Selectbox precisa ser exatamente igual ao valor do dado
-            # para o CSS funcionar corretamente
-            "Status": st.column_config.SelectboxColumn("Status", options=list(status_options.keys()), disabled=not is_admin),
-            "Posto": st.column_config.TextColumn("Posto", disabled=True),
-            "Observacoes": st.column_config.TextColumn("Observações", disabled=not is_admin),
-            "Odometro": st.column_config.NumberColumn("Km atual", disabled=not is_admin), # Coluna Odometro editável apenas para o Admin
-            "DataUso": st.column_config.DateColumn("Data de Uso", disabled=not is_admin),
-            "valor_total": st.column_config.NumberColumn("Valor Total", format="R$ %.2f", disabled=not is_admin),
-            "Ações": st.column_config.TextColumn("Ações"), # Adiciona a coluna de ações
+            "Cidade": st.column_config.TextColumn("Cidade", disabled=True),
+            "total_litros": st.column_config.NumberColumn("Litros", format="%.2f L", disabled=True, width="small"),
+            "valor_total": st.column_config.NumberColumn("Valor", format="R$ %.2f", disabled=not is_admin, width="small"),
+            "Combustivel": st.column_config.TextColumn("Combustível", disabled=True, width="small"),
+            "Posto": st.column_config.TextColumn("Posto", disabled=True, width="small"),
+            "Status": st.column_config.SelectboxColumn("Status", options=list(status_options.keys()), disabled=not is_admin, width="small"),
+            "Odometro": st.column_config.NumberColumn("Km", disabled=not is_admin, width="small"),
+            "DataUso": st.column_config.DateColumn("Data Uso", format="DD/MM/YYYY", disabled=not is_admin, width="small"),
+            "Observacoes": st.column_config.TextColumn("Observações", disabled=not is_admin, width="medium"),
         }
-        
-        df_display = df.copy()
-        
-        df_display['Ações'] = "" # Adiciona a coluna 'Ações' vazia
-        # df_display.insert(0, 'Selecionar', False)
 
-        # Mapear valores para o que queremos exibir na tabela
-        df_display['Status'] = df_display['Status'].replace({
-            "Enviada": "Enviada", 
-            "Usada": "Abastecida", 
-            "Abastecida": "Abastecida", # Garante a consistência
-            "Cancelada": "Cancelada"
-        })
-        
-        columns_to_show = ["id", "data", "Placa", "Condutor", "Supervisor", "Setor", "Subsetor", "Cidade", "Quantidade", "Status", "Odometro", "Posto", "Observacoes", "DataUso", "valor_total", "Ações"]
-        rows = df_display.to_dict('records')
-        
-        col_list = st.columns([0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
-        headers = ["ID", "Data", "Placa", "Condutor", "Supervisor", "Setor", "Subsetor", "Cidade", "Qtde", "Status", "KM", "Posto", "Obs", "Data Uso", "Valor", "Ações"]
-        for col, header in zip(col_list, headers):
-            col.write(f"**{header}**")
-
-        for index, row in enumerate(rows):
-            req_id = row['id']
-            # Requisicoes são mostradas em 16 colunas. 15 colunas para os dados e 1 para o botão.
-            # O tamanho das colunas precisa ser ajustado para acomodar bem os dados.
-            cols = st.columns([0.05, 0.05, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1])
-            
-            with cols[0]: st.write(row['id'])
-            with cols[1]: st.write(row['data'])
-            with cols[2]: st.write(row['Placa'])
-            with cols[3]: st.write(row['Condutor'])
-            with cols[4]: st.write(row['Supervisor'])
-            with cols[5]: st.write(row['Setor'])
-            with cols[6]: st.write(row['Subsetor'])
-            with cols[7]: st.write(row['Cidade'])
-            with cols[8]: st.write(row['Quantidade'])
-            with cols[9]: st.write(row['Status'])
-            with cols[10]: st.write(row['Odometro'])
-            with cols[11]: st.write(row['Posto'])
-            with cols[12]: st.write(row['Observacoes'])
-            with cols[13]: st.write(row['DataUso'])
-            with cols[14]: st.write(f"R$ {row['valor_total']:,.2f}")
-            with cols[15]:
-                # Apenas o autor pode cancelar, e apenas se o status não for 'Cancelada' ou 'Abastecida'
-                if row['Supervisor'] == st.session_state.get('current_user') and row['Status'] not in ["Cancelada", "Abastecida"]:
-                    if st.button("Cancelar", key=f"cancel_{req_id}", help="Clique para cancelar esta requisição."):
-                        st.session_state.df_abastecimentos.loc[st.session_state.df_abastecimentos['id'] == req_id, 'Status'] = 'Cancelada'
-                        save_data(st.session_state.df_abastecimentos)
-                        st.success(f"Requisição {req_id} cancelada com sucesso.")
-                        st.rerun()
+        edited_df = st.data_editor(
+            df_display,
+            column_config=column_config_dict,
+            hide_index=True,
+            use_container_width=True,
+            disabled=(not is_admin)
+        )
 
         if is_admin:
+            # Lógica para salvar alterações de admin
+            if not edited_df.equals(df_display):
+                st.session_state.df_abastecimentos = edited_df
+                save_data(st.session_state.df_abastecimentos)
+                st.toast("✅ Registros atualizados com sucesso!")
+                st.rerun()
+
             st.markdown("---")
             st.markdown("### Ações de Administrador")
             st.warning("Estas ações são permanentes e só devem ser executadas por um administrador.")
 
-            # Recarrega o dataframe para garantir que as edições não afetem a exclusão
-            df_reloaded = load_data()
-            if not df_reloaded.empty:
-                df_reloaded['data'] = pd.to_datetime(df_reloaded['data'], errors='coerce').dt.strftime("%Y-%m-%d")
-                df_reloaded['DataUso'] = pd.to_datetime(df_reloaded['DataUso'], errors='coerce')
-                
-                # Permite que o admin edite a tabela
-                edited_df = st.data_editor(
-                    df_reloaded,
-                    column_order=["id", "Placa", "Condutor", "Supervisor", "Setor", "Subsetor", "Cidade", "total_litros", "Status", "Odometro", "Posto", "Observacoes", "DataUso", "valor_total"],
-                    column_config=column_config_dict,
-                    hide_index=True,
-                    num_rows="static",
-                    key="admin_editor"
-                )
-
-                original_df_indexed = df_reloaded.set_index("id")
-                edited_df_indexed = edited_df.set_index("id")
-                updates_made = False
-
-                for col in edited_df_indexed.columns:
-                    if not edited_df_indexed[col].equals(original_df_indexed[col]):
-                        updates_made = True
-                        break
-                
-                if updates_made:
-                    save_data(edited_df)
-                    st.toast("✅ Registros atualizados com sucesso!")
-                    st.rerun()
-                
-            
             with st.form("admin_actions_form"):
                 st.markdown("Selecione os IDs das requisições para exclusão:")
                 ids_to_delete = st.text_input("IDs (separados por vírgula)")
@@ -945,6 +895,36 @@ def pagina_dashboard():
                   color_discrete_sequence=[_settings.get("primary_medium", "#003b63")])
     st.plotly_chart(fig3, use_container_width=True)
 
+def generate_narrative(df):
+    """Gera uma narrativa analítica simulando uma IA."""
+    narrativas = []
+    
+    # Narrativa sobre o consumo total
+    total_litros = df['total_litros'].sum() if 'total_litros' in df.columns else 0
+    total_valor = df['valor_total'].sum() if 'valor_total' in df.columns else 0
+    narrativas.append(f"Análise geral: O volume total de combustível consumido foi de **{total_litros:,.2f} litros**, com um custo total de **R$ {total_valor:,.2f}**.")
+    
+    # Narrativa sobre o top consumidor
+    if not df.empty and 'Placa' in df.columns:
+        top_placa = df.groupby('Placa')['total_litros'].sum().idxmax()
+        top_consumo = df.groupby('Placa')['total_litros'].sum().max()
+        narrativas.append(f"Principais veículos: O veículo de placa **{top_placa}** foi o maior consumidor, com um total de **{top_consumo:,.2f} litros**.")
+        
+    # Narrativa sobre o pico de consumo
+    if not df.empty and 'data' in df.columns:
+        df_monthly = df.set_index('data').resample('M')['total_litros'].sum()
+        if not df_monthly.empty:
+            pico_mes = df_monthly.idxmax()
+            pico_consumo = df_monthly.max()
+            narrativas.append(f"Tendências de consumo: O pico de consumo ocorreu em **{pico_mes.strftime('%B de %Y')}**, com um total de **{pico_consumo:,.2f} litros**.")
+    
+    # Narrativa sobre média de litros por requisição
+    if not df.empty and 'total_litros' in df.columns:
+        media_litros = df['total_litros'].mean()
+        narrativas.append(f"Eficiência: A média de litros por requisição é de aproximadamente **{media_litros:,.2f} litros**.")
+        
+    return narrativas
+
 def pagina_narrativas():
     if "narrativas" not in USER_PERMISSIONS.get(st.session_state.get("current_user"), []):
         st.warning("Você não tem permissão para acessar esta página.")
@@ -953,7 +933,6 @@ def pagina_narrativas():
     st.header("🧠 Narrativas")
     if LOGO_PATH and os.path.exists(LOGO_PATH):
         st.image(LOGO_PATH, width=120)
-    st.info("Narrativas automáticas sobre consumo, tendências e anomalias.")
 
     if st.session_state.df_abastecimentos.empty:
         st.info("Sem dados para gerar narrativas.")
@@ -961,12 +940,15 @@ def pagina_narrativas():
     
     df = st.session_state.df_abastecimentos.copy()
     df['data'] = pd.to_datetime(df['data'], errors='coerce')
-    total_litros = df['total_litros'].sum() if 'total_litros' in df.columns else 0
-    st.markdown(f"- Total de litros (todos os registros): **{total_litros:,.2f} L**")
-    placas = df['Placa'].value_counts().head(5).to_dict()
-    st.markdown("- Top 5 placas por número de requisições:")
-    for p, c in placas.items():
-        st.write(f"  - {p}: {c} requisições")
+    
+    # Filtra apenas os registros com data válida para análise
+    df_filtered = df.dropna(subset=['data'])
+    
+    narratives = generate_narrative(df_filtered)
+    
+    st.markdown("### Insights Analíticos")
+    for narrative in narratives:
+        st.markdown(f"- {narrative}")
 
 def pagina_configuracoes():
     if "configuracoes" not in USER_PERMISSIONS.get(st.session_state.get("current_user"), []):
