@@ -60,11 +60,16 @@ def create_default_css():
         --text-color: #333333;
         --text-muted: #666666;
         --border-color: #e0e0e0;
+        --input-background: #fcfcfc;
+        --info-color: #17a2b8;
+        --success-color: #28a745;
+        --warning-color: #ffc107;
+        --error-color: #dc3545;
     }
 
     @media (prefers-color-scheme: dark) {
         /* Variáveis para o tema escuro */
-        --primary-dark: #007bff; /* Ou a cor que preferir */
+        --primary-dark: #007bff;
         --primary-medium: #0056b3;
         --highlight-blue: #33aaff;
         --app-background: #1a1a1a;
@@ -72,6 +77,11 @@ def create_default_css():
         --text-color: #f0f2f6;
         --text-muted: #aaaaaa;
         --border-color: #444444;
+        --input-background: #1a1a1a;
+        --info-color: #5bc0de;
+        --success-color: #5cb85c;
+        --warning-color: #f0ad4e;
+        --error-color: #d9534f;
     }
 
     /* Estilos Gerais */
@@ -218,7 +228,7 @@ def create_default_css():
         border-radius: 8px;
         border: 1px solid var(--border-color);
         padding: 10px 15px;
-        background-color: var(--app-background);
+        background-color: var(--input-background);
         transition: border-color 0.2s, box-shadow 0.2s;
         color: var(--text-color);
     }
@@ -297,6 +307,8 @@ def create_default_css():
     .login-input {
         width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid var(--border-color);
         border-radius: 8px; font-size: 1.0em;
+        background-color: var(--input-background);
+        color: var(--text-color);
     }
     .login-button button {
         width: 100%; padding: 12px; font-size: 1.1em; font-weight: bold;
@@ -400,7 +412,7 @@ USER_PERMISSIONS = {
     "Antonio Alfredo": ["requisicoes"],
     "Rosimere Marques": ["requisicoes"],
     "Irisvan Martins": ["requisicoes"],
-    "ADMINISTRADOR": ["requisicoes", "dashboard", "narrativas", "configuracoes"] # Acesso total
+    "ADMINISTRADOR": ["requisicoes", "dashboard", "narrativas", "configuracoes"]
 }
 
 # ===========================
