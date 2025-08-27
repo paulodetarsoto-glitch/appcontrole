@@ -66,24 +66,6 @@ def create_default_css():
         --warning-color: #ffc107;
         --error-color: #dc3545;
     }
-
-    @media (prefers-color-scheme: dark) {
-        /* Variáveis para o tema escuro */
-        --primary-dark: #007bff;
-        --primary-medium: #0056b3;
-        --highlight-blue: #33aaff;
-        --app-background: #1a1a1a;
-        --card-background: #2d2d2d;
-        --text-color: #f0f2f6;
-        --text-muted: #aaaaaa;
-        --border-color: #444444;
-        --input-background: #1a1a1a;
-        --info-color: #5bc0de;
-        --success-color: #5cb85c;
-        --warning-color: #f0ad4e;
-        --error-color: #d9534f;
-    }
-
     /* Estilos Gerais */
     body {
         background: var(--app-background) !important;
@@ -397,6 +379,7 @@ LOGO_PATH = _settings.get("logo_path") if _settings.get("logo_path") else DEFAUL
 if LOGO_PATH and not os.path.isabs(LOGO_PATH):
     LOGO_PATH = os.path.join(PROJECT_DIR, LOGO_PATH)
 
+# A linha abaixo foi ajustada para definir o tema como 'light'
 st.set_page_config(page_title="Requisições de Abastecimento - Frango Americano", layout="wide", page_icon="⛽")
 
 USERS = {
@@ -1063,7 +1046,7 @@ def main():
         login_page()
         return
 
-    st.sidebar.markdown(f'<div class="sidebar-logo-wrapper"><img src="data:image/png;base64,{_get_base64_image(LOGO_PATH)}" width="100"></div>', unsafe_allow_html=True)
+    st.sidebar.markdown(f'<div class="sidebar-logo-wrapper"><img src="data:image/png;base64,{_get_base64_image(LOGO_PATH)}" width="150"></div>', unsafe_allow_html=True)
     st.sidebar.title("Menu")
     
     current_user = st.session_state.get('current_user')
